@@ -5,5 +5,8 @@ public class ScrabbleCheater {
 		// TODO Auto-generated method stub
 
 	}
-
+	
+	private void helloWorld(){
+		System.out.println("Hello World");
+	}
 }
