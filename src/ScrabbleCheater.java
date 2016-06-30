@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 public class ScrabbleCheater {
-	private final int hashTableSize = 7200;
+	private final int hashTableSize = 1000;
 	private LinkedList<String>[] hashTable;
 	private int maxColisioncounter = 0;
 	private int maxColisionposition = 0;
@@ -26,7 +26,6 @@ public class ScrabbleCheater {
 	}
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		ScrabbleCheater scrabbleCheater = new ScrabbleCheater();
 		scrabbleCheater.readFile();
 		scrabbleCheater.run();
@@ -40,8 +39,6 @@ public class ScrabbleCheater {
 			try {
 				input = userInput.readLine();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 			ArrayList<String> result = getWords(input);
 			for(String s: result){
@@ -53,41 +50,33 @@ public class ScrabbleCheater {
 
 	public ArrayList<String> getWords(String input) {
 		ArrayList<String> output = new ArrayList<>();
-		String normalized = normalize(input);
-		int hash = generateHash(normalized);
+		String normalizedInput = normalize(input);
+		int hash = generateHash(normalizedInput);
+		String current = "";
 		LinkedList<String> listOfPotentialWords = hashTable[hash];
 		ListIterator<String> itr = listOfPotentialWords.listIterator();
-		String current = listOfPotentialWords.getFirst();
-		if (normalize(current).equals(normalize(input))) {
-			output.add(current);
-		}
 		while (itr.hasNext()) {
 			current = itr.next();
-			if (normalize(current).equals(normalize(input))) {
+			if (normalize(current).equals(normalizedInput)) {
 				output.add(current);
 			}
-			
 		}
 		return output;
-
 	}
 
 	public void readFile() {
-		File dictionaryFile = new File("/Users/imi/Dropbox/eclipse/info1/ScrabbleCheaterBE/src/wordslong.txt");
+		File dictionaryFile = new File("/Users/imi/Dropbox/eclipse/info1/ScrabbleCheaterBE/src/words.txt");
+		String currentInput = "";
 		BufferedReader fileReader = null;
 		int count = 0;
 		try {
 			fileReader = new BufferedReader(new InputStreamReader(new FileInputStream(dictionaryFile)));
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String currentInput = "";
-
 		try {
 			currentInput = fileReader.readLine();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
@@ -95,7 +84,6 @@ public class ScrabbleCheater {
 			try {
 				currentInput = fileReader.readLine();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			if (currentInput != null) {
@@ -103,20 +91,18 @@ public class ScrabbleCheater {
 				int hash = generateHash(normalized);
 				putInHashTable(currentInput, hash);
 			}
-
-			System.out.println(currentInput);
+			//System.out.println(currentInput);
 			count++;
 		}
 
 		try {
 			fileReader.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		System.out.println("Words total: " + count);
 		System.out.println("Max colision: " + maxColisioncounter);
-		System.out.println("Max colision position" + maxColisionposition);
+		System.out.println("Max colision position " + maxColisionposition);
 	}
 
 	private String normalize(String original) {
@@ -142,7 +128,7 @@ public class ScrabbleCheater {
 		long polynom = 0;
 		for (int i = 0; i < chars.length; i++) {
 			int asciiPosition = chars[i] - 96; // a maps to 1
-			polynom += Math.pow(asciiPosition, i + 1);
+			polynom += Math.pow(asciiPosition, i );
 		}
 		return (int) (polynom % hashTableSize);
 	}
