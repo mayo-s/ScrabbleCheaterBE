@@ -29,7 +29,6 @@ public class ScrabbleCheater {
 		ScrabbleCheater scrabbleCheater = new ScrabbleCheater();
 		scrabbleCheater.readFile();
 		scrabbleCheater.run();
-
 	}
 
 	public void run() {
@@ -45,7 +44,6 @@ public class ScrabbleCheater {
 				System.out.println(s);
 			}
 		}
-
 	}
 
 	public ArrayList<String> getWords(String input) {
@@ -132,5 +130,4 @@ public class ScrabbleCheater {
 		}
 		return (int) (polynom % hashTableSize);
 	}
-
 }
