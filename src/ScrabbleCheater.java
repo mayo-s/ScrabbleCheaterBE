@@ -27,7 +27,7 @@ public class ScrabbleCheater {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException {
 		ScrabbleCheater scrabbleCheater = new ScrabbleCheater();
 		scrabbleCheater.readFile();
 		for(int i=0; i< 100; i++)
@@ -115,16 +115,13 @@ public class ScrabbleCheater {
 			return false;
 	}
 
-	public void readFile() {
-		File dictionaryFile = new File("/Users/imi/Dropbox/eclipse/info1/ScrabbleCheaterBE/src/wordslong.txt");
+	public void readFile() throws FileNotFoundException {
+		File dictionaryFile = new File("./src/wordslong.txt");
 		String currentInput = "";
 		BufferedReader fileReader = null;
 		int count = 0;
-		try {
 			fileReader = new BufferedReader(new InputStreamReader(new FileInputStream(dictionaryFile)));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		
 		try {
 			currentInput = fileReader.readLine();
 		} catch (IOException e1) {
