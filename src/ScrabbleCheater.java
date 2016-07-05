@@ -10,9 +10,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.Random;
 
 public class ScrabbleCheater {
-	private final int hashTableSize = 1000;
+	private final int hashTableSize = 9000;
 	private LinkedList<String>[] hashTable;
 	private int maxColisioncounter = 0;
 	private int maxColisionposition = 0;
@@ -28,6 +29,8 @@ public class ScrabbleCheater {
 	public static void main(String[] args) {
 		ScrabbleCheater scrabbleCheater = new ScrabbleCheater();
 		scrabbleCheater.readFile();
+		for(int i=0; i< 100; i++)
+		scrabbleCheater.printResult(scrabbleCheater.englishDistributionSevenLetters());
 		scrabbleCheater.run();
 	}
 
@@ -39,10 +42,14 @@ public class ScrabbleCheater {
 				input = userInput.readLine();
 			} catch (IOException e) {
 			}
-			ArrayList<String> result = getWords(input);
-			for(String s: result){
-				System.out.println(s);
-			}
+			printResult(input);
+		}
+	}
+
+	private void printResult(String input) {
+		ArrayList<String> result = getWords(input);
+		for (String s : result) {
+			System.out.println(s);
 		}
 	}
 
@@ -62,8 +69,49 @@ public class ScrabbleCheater {
 		return output;
 	}
 
+	private String englishDistributionSevenLetters() {
+		char[] distributionTable = new char[100];
+		int counter = 0;
+		String outputString = "";
+		int[] frequencies = { 9, 2, 2, 4, 12, 2, 3, 2, 9, 1, 1, 4, 2, 6, 8, 2, 1, 6, 4, 6, 4, 2, 2, 1, 2, 1 };
+		for (int i = 0; i < frequencies.length; i++) {
+			for (int j = 0; j < frequencies[i]; j++) {
+				distributionTable[counter] = (char) (i + 97);
+				counter++;
+			}
+		}
+		Random rnd = new Random();
+		for (int i = 0; i < 7; i++) {
+			int randomIndex = rnd.nextInt(100);
+			while (distributionTable[randomIndex] == 64) {
+				randomIndex = rnd.nextInt(100);
+			}
+			outputString += distributionTable[randomIndex];
+			distributionTable[randomIndex] = 64;
+		}
+		return outputString;
+
+	}
+
+	private String randomSevenLetters() {
+		Random rnd = new Random();
+		String returnString = "";
+		for (int i = 0; i <= 7; i++) {
+			char c = (char) (rnd.nextInt(26) + 97);
+			returnString += c;
+		}
+		return returnString;
+	}
+
+	private boolean isPermutation(String word1, String word2) {
+		if (normalize(word1).equals(normalize(word2))) {
+			return true;
+		} else
+			return false;
+	}
+
 	public void readFile() {
-		File dictionaryFile = new File("/Users/imi/Dropbox/eclipse/info1/ScrabbleCheaterBE/src/words.txt");
+		File dictionaryFile = new File("/Users/imi/Dropbox/eclipse/info1/ScrabbleCheaterBE/src/wordslong.txt");
 		String currentInput = "";
 		BufferedReader fileReader = null;
 		int count = 0;
@@ -89,7 +137,7 @@ public class ScrabbleCheater {
 				int hash = generateHash(normalized);
 				putInHashTable(currentInput, hash);
 			}
-			//System.out.println(currentInput);
+			// System.out.println(currentInput);
 			count++;
 		}
 
@@ -126,7 +174,7 @@ public class ScrabbleCheater {
 		long polynom = 0;
 		for (int i = 0; i < chars.length; i++) {
 			int asciiPosition = chars[i] - 96; // a maps to 1
-			polynom += Math.pow(asciiPosition, i );
+			polynom += Math.pow(asciiPosition, i);
 		}
 		return (int) (polynom % hashTableSize);
 	}
