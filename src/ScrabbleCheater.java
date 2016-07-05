@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Random;
@@ -68,6 +69,10 @@ public class ScrabbleCheater {
 		}
 		return output;
 	}
+	
+	//private HashSet<String> getSubstrings(String input){
+		
+	//}
 
 	private String englishDistributionSevenLetters() {
 		char[] distributionTable = new char[100];
@@ -179,3 +184,4 @@ public class ScrabbleCheater {
 		return (int) (polynom % hashTableSize);
 	}
 }
+
