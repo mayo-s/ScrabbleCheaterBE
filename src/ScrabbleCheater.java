@@ -30,8 +30,6 @@ public class ScrabbleCheater {
 	public static void main(String[] args) throws FileNotFoundException {
 		ScrabbleCheater scrabbleCheater = new ScrabbleCheater();
 		scrabbleCheater.readFile();
-		for(int i=0; i< 100; i++)
-		scrabbleCheater.printResult(scrabbleCheater.englishDistributionSevenLetters());
 		scrabbleCheater.run();
 	}
 
@@ -43,18 +41,18 @@ public class ScrabbleCheater {
 				input = userInput.readLine();
 			} catch (IOException e) {
 			}
-			printResult(input);
+			ArrayList<String> result = getSubstringWords(input);
+			printResult(result);
 		}
 	}
 
-	private void printResult(String input) {
-		ArrayList<String> result = getWords(input);
-		for (String s : result) {
+	private void printResult(ArrayList<String> input) {
+		for (String s : input) {
 			System.out.println(s);
 		}
 	}
 
-	public ArrayList<String> getWords(String input) {
+	private ArrayList<String> getWords(String input) {
 		ArrayList<String> output = new ArrayList<>();
 		String normalizedInput = normalize(input);
 		int hash = generateHash(normalizedInput);
@@ -70,15 +68,37 @@ public class ScrabbleCheater {
 		return output;
 	}
 	
-	//private HashSet<String> getSubstrings(String input){
-		
-	//}
+	private ArrayList<String> getSubstringWords(String input){
+		ArrayList<String> substrings = getSubstrings(input);
+		ArrayList<String> output = new ArrayList<>();
+		for(String word:substrings){
+			output.addAll(getWords(word));
+		}
+		return output;
+	}
+	
+	private ArrayList<String> getSubstrings(String input){
+		String normalizedInput = normalize(input);
+		HashSet<String> permutations = new HashSet<>();
+		getSubstrings("",normalizedInput,permutations, -1);
+		return new ArrayList<String>(permutations);
+	}
+	
+	private void getSubstrings(String prefix, String string, HashSet<String> permutations, int currentIndex){
+		for(int i = currentIndex + 1; i < string.length(); i++){
+			String newPrefix = prefix + string.charAt(i);
+			if(newPrefix.length() > 1){
+				permutations.add(newPrefix);
+			}
+			getSubstrings(newPrefix, string, permutations, i);
+		}
+	}
 
 	private String englishDistributionSevenLetters() {
 		char[] distributionTable = new char[100];
 		int counter = 0;
 		String outputString = "";
-		int[] frequencies = { 9, 2, 2, 4, 12, 2, 3, 2, 9, 1, 1, 4, 2, 6, 8, 2, 1, 6, 4, 6, 4, 2, 2, 1, 2, 1 };
+		int[] frequencies = { 9, 2, 2, 4, 12, 2, 3, 2, 9, 1, 1, 4, 2, 6, 8, 2, 1, 6, 4, 6, 4, 2, 2, 1, 2, 1 }; //frequencies of the letters in alphabetical order
 		for (int i = 0; i < frequencies.length; i++) {
 			for (int j = 0; j < frequencies[i]; j++) {
 				distributionTable[counter] = (char) (i + 97);
@@ -88,14 +108,13 @@ public class ScrabbleCheater {
 		Random rnd = new Random();
 		for (int i = 0; i < 7; i++) {
 			int randomIndex = rnd.nextInt(100);
-			while (distributionTable[randomIndex] == 64) {
+			while (distributionTable[randomIndex] == 64) { 
 				randomIndex = rnd.nextInt(100);
 			}
 			outputString += distributionTable[randomIndex];
-			distributionTable[randomIndex] = 64;
+			distributionTable[randomIndex] = 64;//set the entry to 64, to mark the position as taken
 		}
 		return outputString;
-
 	}
 
 	private String randomSevenLetters() {
